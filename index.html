@@ -9,50 +9,61 @@
 </head>
 <body class="site-home">
     <div class="visual-wrapper">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="glass-overlay"></div>
+        <div class="glow-light"></div>
+        <div class="grid-overlay"></div>
     </div>
 
     <nav>
-        <div class="logo">MCBROWSER</div>
+        <div class="logo">MCBROWSER<span>.mono</span></div>
         <div class="nav-links">
             <a href="index.html">Concept</a>
             <a href="demo.html" class="nav-demo-link">Launch Demo</a>
-            <a href="faq.html" class="nav-demo-link">FAQ</a>
-            <a href="https://github.com/mikancat10/MCBrowser" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="faq.html">FAQ</a>
+            <a href="https://github.com/mikancat10/MCBrowser" target="_blank" class="github-icon">
+                <i class="fab fa-github"></i>
+            </a>
         </div>
     </nav>
 
     <main>
         <section id="hero">
-            <div class="badge">Next Generation Browser</div>
-            <h1 class="gradient-text">Beyond the<br><span class="highlight">Window.</span></h1>
+            <div class="status-badge">
+                <span class="dot"></span> System Operational: v2.0.26
+            </div>
+            <h1 class="hero-title">
+                Beyond the<br>
+                <span class="text-outline">Window.</span>
+            </h1>
             <p class="hero-sub">
-                ウェブは、もっと自由になれる。圧倒的な速度と、直感的なタブ操作が融合した、全く新しいブラウジング体験。
+                ウェブは、もっと自由になれる。圧倒的な速度と、直感的なタブ操作が融合した、次世代のブラウジング体験。
             </p>
             <div class="cta-area">
-                <a href="demo.html" class="cta-btn main">
+                <a href="demo.html" class="cta-btn primary">
                     Launch Interactive Demo
-                    <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="#features" class="cta-btn outline">Learn More</a>
+                <a href="#features" class="cta-btn secondary">
+                    View Specifications
+                </a>
             </div>
         </section>
 
         <section id="features">
+            <div class="section-label">Core Modules</div>
             <div class="feature-grid">
-                <div class="glass-card">
+                <div class="feature-card">
+                    <div class="card-num">01</div>
                     <div class="icon-box"><i class="fas fa-wind"></i></div>
                     <h3>Velocity</h3>
                     <p>独自のエンジン最適化により、ページ読み込みを劇的に短縮。</p>
                 </div>
-                <div class="glass-card">
+                <div class="feature-card">
+                    <div class="card-num">02</div>
                     <div class="icon-box"><i class="fas fa-object-group"></i></div>
                     <h3>Fluent Tab</h3>
-                    <p>指先に吸い付くようなドラッグ＆ドロップ。タブ整理のストレスから解放。</p>
+                    <p>指先に吸い付くような操作性。タブ整理の概念を再定義。</p>
                 </div>
-                <div class="glass-card">
+                <div class="feature-card">
+                    <div class="card-num">03</div>
                     <div class="icon-box"><i class="fas fa-fingerprint"></i></div>
                     <h3>Anonymity</h3>
                     <p>プライバシーをデフォルトで。あなたの足跡を残さない設計。</p>
@@ -62,7 +73,10 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 MCBrowser Project. Driven by Innovation.</p>
+        <div class="footer-content">
+            <div class="footer-logo">MCBROWSER</div>
+            <p>&copy; 2026 MCBrowser Project. All Rights Reserved.</p>
+        </div>
     </footer>
 </body>
 </html>
