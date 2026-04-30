@@ -1,14 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono&display=swap');
 
 :root {
-    --primary: #6366f1;
-    --secondary: #a855f7;
-    --accent: #22d3ee;
-    --bg-dark: #0a0a0f;
-    --glass: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --text-main: #f8fafc;
-    --text-dim: #94a3b8;
+    --bg-black: #050505;        /* 真の黒 */
+    --card-bg: #0f0f0f;         /* 濃い灰色 */
+    --border-gray: #222222;     /* 境界線 */
+    --text-pure: #ffffff;
+    --text-muted: #888888;      /* 補助テキスト用の灰色 */
+    --accent-white: #ffffff;
+    --glass: rgba(255, 255, 255, 0.02);
 }
 
 * {
@@ -18,49 +17,38 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-black);
+    color: var(--text-pure);
     line-height: 1.6;
-    overflow-x: hidden;
-    min-height: 100vh;
+    letter-spacing: -0.01em;
 }
 
-/* 背景のアニメーション装飾 */
+/* 背景装飾：色彩を抜き、光の強弱のみで表現 */
 .visual-wrapper {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: -1;
-    overflow: hidden;
+    background: radial-gradient(circle at 50% -20%, #1a1a1a 0%, var(--bg-black) 70%);
 }
 
 .blob {
     position: absolute;
-    width: 500px;
-    height: 500px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    filter: blur(80px);
+    width: 600px;
+    height: 400px;
+    background: #ffffff;
+    filter: blur(120px);
     border-radius: 50%;
-    opacity: 0.4;
-    animation: move 20s infinite alternate;
+    opacity: 0.03; /* 極めて薄い光 */
+    animation: pulse 15s infinite alternate;
 }
 
-.blob-1 { top: -10%; left: -10%; }
-.blob-2 { bottom: -10%; right: -10%; animation-delay: -5s; }
+.blob-1 { top: -10%; left: 10%; }
+.blob-2 { bottom: 10%; right: 10%; animation-delay: -7s; }
 
-@keyframes move {
-    from { transform: translate(0, 0) scale(1); }
-    to { transform: translate(100px, 50px) scale(1.2); }
-}
-
-.glass-overlay {
-    position: absolute;
-    inset: 0;
-    backdrop-filter: blur(100px);
-    background: radial-gradient(circle at center, transparent, var(--bg-dark));
+@keyframes pulse {
+    from { transform: scale(1) translate(0, 0); }
+    to { transform: scale(1.1) translate(-20px, 40px); }
 }
 
 /* ナビゲーション */
@@ -68,175 +56,169 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2rem 10%;
+    padding: 1.5rem 8%;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-gray);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .logo {
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 800;
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-    background: linear-gradient(to right, #fff, var(--text-dim));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 1.2rem;
+    letter-spacing: -1px;
 }
 
 .nav-links {
     display: flex;
-    gap: 2.5rem;
+    gap: 2rem;
     align-items: center;
 }
 
 .nav-links a {
     text-decoration: none;
-    color: var(--text-dim);
+    color: var(--text-muted);
+    font-size: 0.85rem;
     font-weight: 500;
-    transition: 0.3s;
-    font-size: 0.9rem;
+    transition: color 0.3s;
 }
 
 .nav-links a:hover {
-    color: var(--text-main);
+    color: var(--text-pure);
 }
 
 .nav-demo-link {
-    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--border-gray);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
     background: var(--glass);
-    border: 1px solid var(--glass-border);
-    border-radius: 50px;
 }
 
 /* ヒーローセクション */
 #hero {
-    padding: 8rem 10% 4rem;
+    padding: 10rem 8% 6rem;
     text-align: center;
-    max-width: 1000px;
-    margin: 0 auto;
 }
 
 .badge {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    border-radius: 50px;
-    color: var(--accent);
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border-gray);
+    border-radius: 100px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
     margin-bottom: 2rem;
-    letter-spacing: 1px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
 h1 {
-    font-size: clamp(3rem, 8vw, 5.5rem);
-    line-height: 1.1;
+    font-size: clamp(3.5rem, 10vw, 6.5rem);
     font-weight: 800;
-    margin-bottom: 1.5rem;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin-bottom: 2rem;
 }
 
 .gradient-text {
-    background: linear-gradient(to bottom, #fff 30%, #64748b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-pure);
 }
 
 .highlight {
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-muted); /* ここを灰色にすることでモダンな対比を表現 */
 }
 
 .hero-sub {
-    font-size: 1.25rem;
-    color: var(--text-dim);
-    margin-bottom: 3rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 550px;
+    margin: 0 auto 3.5rem;
+    font-weight: 400;
 }
 
-/* ボタン */
+/* ボタン：モノトーンのコントラスト */
 .cta-area {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     justify-content: center;
 }
 
 .cta-btn {
-    padding: 1.2rem 2.5rem;
-    border-radius: 12px;
+    padding: 1rem 2rem;
+    border-radius: 8px;
     text-decoration: none;
-    font-weight: 700;
-    transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cta-btn.main {
-    background: var(--text-main);
-    color: var(--bg-dark);
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    background: var(--text-pure);
+    color: var(--bg-black);
 }
 
 .cta-btn.main:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+    filter: brightness(0.9);
 }
 
 .cta-btn.outline {
-    border: 1px solid var(--glass-border);
-    color: var(--text-main);
-    background: var(--glass);
+    border: 1px solid var(--border-gray);
+    color: var(--text-pure);
+    background: transparent;
 }
 
 .cta-btn.outline:hover {
-    background: var(--glass-border);
+    background: var(--border-gray);
 }
 
-/* フィーチャーカード */
+/* フィーチャーカード：ミニマル・グリッド */
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 4rem 10% 8rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0 8% 10rem;
 }
 
 .glass-card {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    padding: 3rem 2rem;
-    border-radius: 24px;
-    transition: 0.4s;
-    backdrop-filter: blur(10px);
+    background: var(--card-bg);
+    border: 1px solid var(--border-gray);
+    padding: 2.5rem;
+    border-radius: 16px;
+    transition: border-color 0.4s;
 }
 
 .glass-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--primary);
-    transform: translateY(-10px);
+    border-color: #444444;
 }
 
 .icon-box {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-pure);
 }
 
 .glass-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
 }
 
 .glass-card p {
-    color: var(--text-dim);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
 }
 
 /* フッター */
 footer {
-    padding: 4rem;
+    padding: 4rem 8%;
+    border-top: 1px solid var(--border-gray);
     text-align: center;
-    border-top: 1px solid var(--glass-border);
-    color: var(--text-dim);
-    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
 }
