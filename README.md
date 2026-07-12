@@ -19,8 +19,7 @@ Electronをベースに構築されており、余計な装飾を削ぎ落とし
 - 🖱️ **Enhanced Native Menu**: 操作をスピーディーに行えるよう独自にカスタマイズされた右クリックメニュー。
 
 ## 📸 インターフェース (Screenshots)
-!["UI"]("image.png")
-
+<!-- Uploading "YAT20314032_TP_V.webp"... -->
 ## 🛠 セットアップ (Installation)
 
 開発環境で実行、またはビルドする場合は以下の手順に従ってください。
