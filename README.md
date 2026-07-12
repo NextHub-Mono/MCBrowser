@@ -19,7 +19,7 @@ Electronをベースに構築されており、余計な装飾を削ぎ落とし
 - 🖱️ **Enhanced Native Menu**: 操作をスピーディーに行えるよう独自にカスタマイズされた右クリックメニュー。
 
 ## 📸 インターフェース (Screenshots)
-(![image.png]())
+([image.png])
 
 ## 🛠 セットアップ (Installation)
 
