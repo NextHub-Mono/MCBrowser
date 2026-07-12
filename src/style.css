@@ -1,204 +1,452 @@
-:root {
-  --bg-main: #f3f3f3;
-  --bg-bar: #ffffff;
-  --bg-tab: #e6e6e6;
-  --bg-tab-active: #ffffff;
-  --border: #d0d0d0;
-  --text: #222;
-}
-
-* { box-sizing: border-box; font-family: "Segoe UI", system-ui, sans-serif; }
-body { margin:0; background:var(--bg-main); overflow:hidden; }
-
-#titlebar { height:38px; display:flex; align-items:center; background:var(--bg-bar); border-bottom:1px solid var(--border);}
-#tabs { display:flex; flex:1; padding-left:8px; overflow-x:auto; white-space:nowrap; }
-
-.tab { flex:0 0 auto; min-width:140px; max-width:200px; height:30px; padding:6px 10px; margin-right:6px; background:var(--bg-tab); border-radius:8px 8px 0 0; cursor:pointer; user-select:none; display:flex; align-items:center; }
-.tab.active { background:var(--bg-tab-active); border:1px solid var(--border); border-bottom:none; }
-.tab-close { margin-left:auto; font-size:14px; opacity:0.6; cursor:pointer; }
-.tab-close:hover { opacity:1; }
-
-#newTabBtn { margin-right:10px; width:28px; height:28px; border:none; border-radius:50%; background:#e0e0e0; cursor:pointer; }
-
-#nav { height:42px; background:var(--bg-bar); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 12px; position:relative; }
-.nav-btn { width:30px; height:30px; margin-right:6px; border:none; border-radius:50%; background:#eaeaea; cursor:pointer; }
-#urlbar { flex:1; height:30px; border-radius:15px; border:1px solid var(--border); padding:0 14px; font-size:14px; }
-
-#view-container { width:100vw; height:calc(100vh-80px); }
-.webview { width:100%; height:100%; }
-
-#bookmarkBar { height:34px; background:var(--bg-bar); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 8px; gap:6px; overflow-x:auto; }
-.bookmark-btn { display:flex; align-items:center; gap:6px; padding:6px 10px; background:#eaeaea; border-radius:14px; cursor:pointer; }
-.bookmark-btn:hover { background:#ddd; }
-
-.settings-sidebar { position:fixed; top:0; right:-320px; width:320px; height:100vh; background:#fff; border-left:1px solid #ccc; box-shadow:-4px 0 10px rgba(0,0,0,0.15); transition:right 0.25s ease; display:flex; flex-direction:column; }
-.settings-sidebar.open { right:0; }
-.settings-header { height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 12px; border-bottom:1px solid #ddd; font-weight:600; }
-.settings-content { padding:12px; }
-.setting-item { display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:14px; }
-
-.reset-btn { margin-top: 12px; padding: 8px 12px; background: #ff4d4f; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.reset-btn:hover { background: #e04444; }
-
-body.dark-mode { background-color: #1e1e1e; color: #f0f0f0; }
-body.dark-mode #bookmarkBar, body.dark-mode .tab, body.dark-mode #nav { background-color: rgba(40,40,40,0.85); border-color:#555; color:#f0f0f0; }
-body.dark-mode input, body.dark-mode select { background-color:#333; color:#f0f0f0; border-color:#555; }
-
-/* webview を親に合わせる */
-.webview {
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  border:none;
-  display:none;
-  z-index:0;
-}
-
-
-#view-container {
-  flex: 1;           /* 残りの高さをすべて使う */
-  display: flex;
-  position: relative;
-  overflow: hidden;
-    position:relative;
-  z-index:0;
+/* =================================================================
+   1. グローバルスタイル ＆ ベースリセット
+   ================================================================= */
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
   height: 100vh;
+  position: relative;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* --- テーマ別ベースカラー設定 --- */
+body.theme-dark {
+  background-color: #080808;
+  color: #e0e0e0;
+}
+body.theme-light {
+  background-color: #f4f5f7;
+  color: #1e1e1e;
+}
+
+/* アプリ全体の最背面に設置するカスタム背景 */
+#browser-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* =================================================================
+   2. フレームレスウィンドウのドラッグ・ノードラッグ制御
+   ================================================================= */
+#window-drag-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-app-region: drag;
+  z-index: 1;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+  z-index: 2;
+}
+
+/* =================================================================
+   3. ヘッダー構造（テーマ別配色）
+   ================================================================= */
+#browser-header {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--bg-main);
+  z-index: 10;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* ダークモード時のヘッダー */
+body.theme-dark #browser-header {
+  background-color: rgba(22, 22, 22, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #252525;
+}
+body.theme-dark .header-bottom-row {
+  border-top: 1px solid #1f1f1f;
+  background-color: rgba(28, 28, 28, 0.9);
+}
+
+/* 新規ライトモード時のヘッダー（クリーンで洗練された白とライトグレー） */
+body.theme-light #browser-header {
+  background-color: rgba(228, 230, 235, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #cfd2d9;
+}
+body.theme-light .header-bottom-row {
+  border-top: 1px solid #e1e3e8;
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+/* 上段・下段のレイアウトサイズ */
+.header-top-row {
+  position: relative;
+  height: 45px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-right: 140px;
+  z-index: 2;
+}
+.header-bottom-row {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+}
+
+/* =================================================================
+   4. ウィンドウ操作ボタン (Chrome風)
+   ================================================================= */
+#window-controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.win-btn {
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  width: 46px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s, color 0.15s;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ダークモード時のボタンホバー */
+body.theme-dark .win-btn { color: #999999; }
+body.theme-dark .win-btn:hover { background-color: #2b2b2b; color: #ffffff; }
+
+/* ライトモード時のボタンホバー */
+body.theme-light .win-btn { color: #555555; }
+body.theme-light .win-btn:hover { background-color: #d0d3da; color: #000000; }
+
+/* 閉じるボタンの共通処理（常に赤） */
+.win-btn-close:hover {
+  background-color: #e81123 !important;
+  color: #ffffff !important;
+}
+
+/* =================================================================
+   5. タブバー＆タブデザイン（ライトモード対応）
+   ================================================================= */
+#tabs-container {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  padding-left: 8px;
   overflow: hidden;
 }
 
-/* タイトルバー＋ナビ＋ブックマークバーを縦に並べる */
-#titlebar, #nav, #bookmarkBar {
-  flex-shrink: 0;
+#tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  overflow-x: auto;
+  max-width: calc(100vw - 200px);
 }
 
-.nav-btn.small {
-  width: 22px;
-  height: 22px;
+body.no-tab-scroll #tabs::-webkit-scrollbar { display: none; }
+#tabs::-webkit-scrollbar { height: 4px; }
+#tabs::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 2px; }
+
+/* タブ単体のスタイル */
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 140px;
+  max-width: 200px;
+  height: 34px;
+  padding: 0 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+/* ダークモードのタブ配色 */
+body.theme-dark .tab {
+  background-color: #161616;
+  border: 1px solid #252525;
+  border-bottom: none;
+  color: #888888;
+}
+body.theme-dark .tab:hover { background-color: #222222; color: #cccccc; }
+body.theme-dark .tab.active {
+  background-color: #1c1c1c;
+  color: #ffffff;
+  border-top: 2px solid #555555;
+}
+
+/* 新ライトモードのタブ配色 */
+body.theme-light .tab {
+  background-color: #dadce0;
+  border: 1px solid #bdc1c6;
+  border-bottom: none;
+  color: #5f6368;
+}
+body.theme-light .tab:hover { background-color: #e3e5e8; color: #3c4043; }
+body.theme-light .tab.active {
+  background-color: #ffffff;
+  color: #1a73e8; /* アクティブなアクセントブルー */
+  border-top: 2px solid #1a73e8;
+  border-left-color: #bdc1c6;
+  border-right-color: #bdc1c6;
+}
+
+/* 形状スキン */
+body.chrome-tabs .tab { border-radius: 8px 8px 0 0; margin-top: 4px; }
+body.square-tabs .tab { border-radius: 0; }
+
+.tab-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 8px;
+}
+
+.close-tab-btn {
+  background: transparent;
+  border: none;
   font-size: 10px;
-  margin-right: 10px;
+  cursor: pointer;
+  padding: 4px;
   border-radius: 50%;
-  background: #e0e0e0;
+  color: inherit;
+  opacity: 0.6;
+}
+.close-tab-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+  opacity: 1;
+  color: #ff5555;
 }
 
-/* ===== 履歴ポップアップ ===== */
+#newTabBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-left: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.theme-dark #newTabBtn { background: #1c1c1c; border-color: #333; color: #aaa; }
+body.theme-dark #newTabBtn:hover { background: #2a2a2a; color: #fff; }
+
+body.theme-light #newTabBtn { background: #e8eaed; border-color: #bdc1c6; color: #5f6368; }
+body.theme-light #newTabBtn:hover { background: #d8dbdf; color: #202124; }
+
+/* =================================================================
+   6. ナビゲーションコントロール・URLバー
+   ================================================================= */
+.nav-buttons, .action-buttons { display: flex; gap: 6px; }
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.theme-dark .nav-btn { color: #aaaaaa; }
+body.theme-dark .nav-btn:hover { background-color: #2d2d2d; color: #ffffff; }
+
+body.theme-light .nav-btn { color: #5f6368; }
+body.theme-light .nav-btn:hover { background-color: #f1f3f4; color: #202124; }
+
+.urlbar-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  padding: 0 8px;
+  transition: border-color 0.2s;
+}
+body.theme-dark .urlbar-wrapper { background-color: #101010; border: 1px solid #2d2d2d; }
+body.theme-dark .urlbar-wrapper:focus-within { border-color: #555; }
+
+body.theme-light .urlbar-wrapper { background-color: #f1f3f4; border: 1px solid #dee1e6; }
+body.theme-light .urlbar-wrapper:focus-within { border-color: #1a73e8; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+#urlbar {
+  flex: 1;
+  background: transparent;
+  border: none;
+  height: 32px;
+  outline: none;
+}
+body.theme-dark #urlbar { color: #ffffff; }
+body.theme-light #urlbar { color: #202124; }
+
+#bookmarkBtn { background: transparent; border: none; color: #666666; cursor: pointer; }
+#bookmarkBtn:hover { color: #ffcc00; }
+
+/* =================================================================
+   7. ブックマークバー ＆ 履歴ポップアップ
+   ================================================================= */
+#bookmarkBar {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  overflow-x: auto;
+}
+body.theme-dark #bookmarkBar { background-color: rgba(22, 22, 22, 0.95); border-top: 1px solid #1a1a1a; }
+body.theme-light #bookmarkBar { background-color: rgba(255, 255, 255, 0.95); border-top: 1px solid #e8eaed; }
+
+.bookmark-item {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.theme-dark .bookmark-item { color: #aaaaaa; }
+body.theme-dark .bookmark-item:hover { background-color: #2a2a2a; color: #ffffff; }
+
+body.theme-light .bookmark-item { color: #5f6368; }
+body.theme-light .bookmark-item:hover { background-color: #f1f3f4; color: #202124; }
+
 #historyPopup {
   position: absolute;
-  top: 40px;
-  left: 10px;
-  width: 260px;
-  max-height: 300px;
+  top: 95px;
+  left: 12px;
+  width: 320px;
+  max-height: 400px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   overflow-y: auto;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  z-index: 999;
+  z-index: 100;
   padding: 6px 0;
 }
+body.theme-dark #historyPopup { background-color: #161616; border: 1px solid #333333; }
+body.theme-dark .history-item { color: #cccccc; }
+body.theme-dark .history-item:hover { background-color: #252525; color: #ffffff; }
 
-.history-item {
-  padding: 6px 10px;
-  font-size: 13px;
+body.theme-light #historyPopup { background-color: #ffffff; border: 1px solid #dee1e6; }
+body.theme-light .history-item { color: #3c4043; }
+body.theme-light .history-item:hover { background-color: #f1f3f4; color: #1a73e8; }
+
+/* =================================================================
+   8. 設定サイドバー (右スライドイン)
+   ================================================================= */
+#settingsSidebar {
+  position: absolute;
+  top: 0;
+  right: -320px;
+  width: 320px;
+  height: 100vh;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+#settingsSidebar.open { right: 0; }
+
+body.theme-dark #settingsSidebar { background-color: #121212; border-left: 1px solid #2d2d2d; }
+body.theme-light #settingsSidebar { background-color: #ffffff; border-left: 1px solid #dee1e6; }
+
+.sidebar-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+body.theme-dark .sidebar-header { border-bottom: 1px solid #2d2d2d; }
+body.theme-light .sidebar-header { border-bottom: 1px solid #dee1e6; }
+#closeSettingsBtn { background: transparent; border: none; font-size: 16px; cursor: pointer; color: inherit; }
+
+.sidebar-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.setting-group { display: flex; flex-direction: column; gap: 8px; }
+.setting-group label { font-size: 11px; color: #888888; text-transform: uppercase; letter-spacing: 1px; }
+.setting-item { display: flex; align-items: center; gap: 10px; }
+
+select, input[type="file"] {
+  padding: 8px;
+  border-radius: 6px;
+  outline: none;
+}
+body.theme-dark select, body.theme-dark input[type="file"] { background-color: #1c1c1c; border: 1px solid #333333; color: #ffffff; }
+body.theme-light select, body.theme-light input[type="file"] { background-color: #f1f3f4; border: 1px solid #dee1e6; color: #202124; }
+
+.danger-btn {
+  padding: 10px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
+body.theme-dark .danger-btn { background-color: #3a1a1a; border: 1px solid #662222; color: #ff8888; }
+body.theme-dark .danger-btn:hover { background-color: #551111; }
+body.theme-light .danger-btn { background-color: #fce8e6; border: 1px solid #f9ab0a; color: #c5221f; }
+body.theme-light .danger-btn:hover { background-color: #fbe5e2; }
 
-.history-item:hover {
-  background: #f0f0f0;
-}
+/* =================================================================
+   9. ★ダイナミックフォント切り替え（emベースのスマート設計）
+   ================================================================= */
+/* 全体の文字の大きさと、それに伴う高さやアイコンサイズのバランスを調整します */
 
-.hidden { display:none; }
+/* --- 【小】サイズ指定時 --- */
+body.font-small { font-size: 11px; }
+body.font-small .tab { height: 30px; font-size: 11px; }
+body.font-small #urlbar { font-size: 11px; height: 28px; }
+body.font-small .nav-btn { width: 28px; height: 28px; font-size: 14px; }
+body.font-small .header-bottom-row { height: 42px; }
 
-/* ===== カスタム右クリックメニュー ===== */
-.context-menu {
-  position: fixed;
-  background: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-  padding: 6px 0;
-  min-width: 180px;
-  z-index: 9999;
-  font-size: 13px;
-}
+/* --- 【中】サイズ指定時（標準） --- */
+body.font-medium { font-size: 13px; }
+body.font-medium .tab { height: 35px; font-size: 13px; }
+body.font-medium #urlbar { font-size: 13px; height: 32px; }
+body.font-medium .nav-btn { width: 32px; height: 32px; font-size: 16px; }
+body.font-medium .header-bottom-row { height: 50px; }
 
-.context-menu-item {
-  padding: 8px 14px;
-  cursor: pointer;
-}
+/* --- 【大】サイズ指定時 --- */
+body.font-large { font-size: 15px; }
+body.font-large .tab { height: 40px; font-size: 15px; min-width: 160px; }
+body.font-large #urlbar { font-size: 15px; height: 36px; }
+body.font-large .nav-btn { width: 36px; height: 36px; font-size: 18px; }
+body.font-large .header-bottom-row { height: 56px; }
 
-.context-menu-item:hover {
-  background: #f2f2f2;
-}
-
-.context-menu-separator {
-  height: 1px;
-  background: #e0e0e0;
-  margin: 4px 0;
-}
-
-/* ===== よくアクセスするサイト ===== */
-#topSites{
-  margin-top:34px;
-  width:560px;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-  justify-content:center;
-}
-
-.site-tile{
-  height:90px;
-  border-radius:14px;
-  background:#ffffff;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
-  cursor:pointer;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  transition:.15s;
-}
-
-.site-tile:hover{
-  transform:translateY(-3px);
-  box-shadow:0 6px 18px rgba(0,0,0,.15);
-}
-
-.site-icon{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:#e8eaed;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  margin-bottom:6px;
-}
-
-.site-title{
-  font-size:12px;
-  max-width:110px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  color:#333;
-}
-
-.site-icon{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  object-fit:contain;
-  background:#fff;
-  padding:4px;
-  margin-bottom:6px;
-}
+/* ユーティリティ */
+.hidden { display: none !important; }
+#content-area { flex: 1; position: relative; }
