@@ -5,7 +5,7 @@
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 
 **MCBrowser** は、ミニマリズムと没入感を追求した次世代のウェブブラウザです。
-Electronをベースに構築されており、余計な装飾を削ぎ落とした「白」が基調のホワイトUIが、あなたのブラウジングをより洗練されたものにします。
+Electronをベースに構築されており、余計な装飾を削ぎ落とした「黒」が基調のブラックUIが、あなたのブラウジングをより洗練されたものにします。
 
 [公式サイトはこちら](https://mikancat10.github.io/MCBrowser/)
 
@@ -61,3 +61,8 @@ npm start
 |1.0.0|△|ウェブ検索機能 ウェブアクセス機能 タブ機能|なし|
 
 〇=期待できる △=あんまり期待しないほうがいい ×期待できない
+
+---
+
+Click here to view the English README.
+https://github.com/NextHub-Mono/Moocle/blob/main/EN-README.md
