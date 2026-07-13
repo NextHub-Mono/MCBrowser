@@ -1,4 +1,4 @@
-# MCBrowser 🌐
+# Moocle 🌐
 
 ![Version](https://img.shields.io/badge/version-v4.0.0--beta-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
